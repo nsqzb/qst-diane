@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre avis compte | Diane's Chocolats</title>
+    <!-- Importation de polices élégantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #3E2723; /* Chocolat noir */
+            --color-secondary: #5D4037; /* Chocolat au lait */
+            --color-accent: #D4AF37; /* Or/Doré */
+            --color-bg: #FDFBF7; /* Crème */
+            --color-white: #FFFFFF;
+            --color-gray: #BDBDBD;
+            --shadow: 0 4px 20px rgba(62, 39, 35, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: var(--color-white);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* --- Container --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* --- Form Sections --- */
+        .card {
+            background: var(--color-white);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--color-accent);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--color-secondary);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .question-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* --- NPS Scale (0-10) --- */
+        .nps-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .nps-radio {
+            display: none;
+        }
+
+        .nps-label {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+
+        .nps-radio:checked + .nps-label {
+            background-color: var(--color-secondary);
+            color: var(--color-white);
+            border-color: var(--color-secondary);
+            transform: scale(1.1);
+        }
+
+        .nps-radio:hover + .nps-label {
+            background-color: #eee;
+        }
+
+        .nps-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            color: #666;
+            padding: 0 10px;
+        }
+
+        /* --- Custom Radio Buttons (Vertical) --- */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .custom-radio {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s;
+        }
+
+        .custom-radio:hover {
+            background-color: #f9f9f9;
+        }
+
+        .custom-radio input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-secondary);
+            border-radius: 50%;
+            margin-right: 15px;
+            position: relative;
+        }
+
+        .custom-radio input:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background-color: var(--color-secondary);
+            border-radius: 50%;
+        }
+
+        .custom-radio input:checked {
+            border-color: var(--color-accent);
+        }
+
+        /* --- Star Rating --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse; /* Allows CSS hover logic */
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 30px;
+            color: var(--color-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: var(--color-accent);
+        }
+
+        .rating-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-left: 10px;
+            align-self: center;
+        }
+
+        /* --- Text Area --- */
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        /* --- Submit Button --- */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: var(--color-secondary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 20px;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(93, 64, 55, 0.4);
+        }
+
+        /* --- Success Message (Hidden by default) --- */
+        #success-message {
+            display: none;
+            text-align: center;
+            background: var(--color-white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+        
+        #success-message h2 {
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .nps-label { width: 35px; height: 35px; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Diane's</h1>
+        <p>L'excellence chocolatée, votre avis précieux.</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- Formulaire -->
+        <form id="feedbackForm">
+            
+            <!-- Partie 1 -->
+            <div class="card">
+                <h2 class="section-title">Partie 1 : Votre expérience globale</h2>
+                <label class="question-label">Q1. Quelle est la probabilité que vous recommandiez les chocolats Diane's à un ami ?</label>
+                
+                <div class="nps-container">
+                    <!-- Génération de 0 à 10 -->
+                    <input type="radio" name="nps" id="nps-0" value="0" class="nps-radio"><label for="nps-0" class="nps-label">0</label>
+                    <input type="radio" name="nps" id="nps-1" value="1" class="nps-radio"><label for="nps-1" class="nps-label">1</label>
+                    <input type="radio" name="nps" id="nps-2" value="2" class="nps-radio"><label for="nps-2" class="nps-label">2</label>
+                    <input type="radio" name="nps" id="nps-3" value="3" class="nps-radio"><label for="nps-3" class="nps-label">3</label>
+                    <input type="radio" name="nps" id="nps-4" value="4" class="nps-radio"><label for="nps-4" class="nps-label">4</label>
+                    <input type="radio" name="nps" id="nps-5" value="5" class="nps-radio"><label for="nps-5" class="nps-label">5</label>
+                    <input type="radio" name="nps" id="nps-6" value="6" class="nps-radio"><label for="nps-6" class="nps-label">6</label>
+                    <input type="radio" name="nps" id="nps-7" value="7" class="nps-radio"><label for="nps-7" class="nps-label">7</label>
+                    <input type="radio" name="nps" id="nps-8" value="8" class="nps-radio"><label for="nps-8" class="nps-label">8</label>
+                    <input type="radio" name="nps" id="nps-9" value="9" class="nps-radio"><label for="nps-9" class="nps-label">9</label>
+                    <input type="radio" name="nps" id="nps-10" value="10" class="nps-radio"><label for="nps-10" class="nps-label">10</label>
+                </div>
+                <div class="nps-legend">
+                    <span>Pas du tout probable</span>
+                    <span>Très probable</span>
+                </div>
+            </div>
+
+            <!-- Partie 2 -->
+            <div class="card">
+                <h2 class="section-title">Partie 2 : La Livraison</h2>
+                
+                <div style="margin-bottom: 25px;">
+                    <label class="question-label">Q2. Comment évaluez-vous l'état de votre ballotin à l'arrivée ?</label>
+                    <div class="radio-group">
+                        <label class="custom-radio">
+                            <input type="radio" name="etat" value="intact">
+                            Intact et frais (Conforme)
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="etat" value="abime">
+                            Légèrement abîmé
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="etat" value="fondu">
+                            Chocolats fondus ou boîte écrasée
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="question-label">Q3. Le délai de livraison a-t-il été respecté (livraison le jour même) ?</label>
+                    <div class="radio-group">
+                        <label class="custom-radio">
+                            <input type="radio" name="delai" value="oui">
+                            Oui, parfaitement
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="delai" value="retard">
+                            Non, léger retard
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="delai" value="lendemain">
+                            Non, livré le lendemain
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partie 3 -->
+            <div class="card">
+                <h2 class="section-title">Partie 3 : La Qualité Produit</h2>
+                <label class="question-label">Q4. Que pensez-vous du rapport Qualité/Prix "CHOCH" (12 chocolats / 10 CHF) ?</label>
+                
+                <div class="star-rating">
+                    <!-- Note: Ordre inversé pour le CSS (5 à 1) -->
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="Excellent">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="Très bien">★</label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="Bien">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="Moyen">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="Insuffisant">★</label>
+                </div>
+                <div style="text-align: right; color: #888; font-size: 0.85rem; margin-top:5px;">(Sélectionnez une étoile)</div>
+            </div>
+
+            <!-- Partie 4 -->
+            <div class="card">
+                <h2 class="section-title">Partie 4 : Diane's en Europe ?</h2>
+                <label class="question-label">Q5. Intéressé(e) pour envoyer des cadeaux en Autriche, Suisse ou France voisine ?</label>
+                
+                <div class="radio-group">
+                    <label class="custom-radio">
+                        <input type="radio" name="europe" value="oui">
+                        Oui, absolument !
+                    </label>
+                    <label class="custom-radio">
+                        <input type="radio" name="europe" value="peut-etre">
+                        Peut-être
+                    </label>
+                    <label class="custom-radio">
+                        <input type="radio" name="europe" value="non">
+                        Non
+                    </label>
+                </div>
+            </div>
+
+            <!-- Partie 5 -->
+            <div class="card">
+                <h2 class="section-title">Partie 5 : La parole est à vous</h2>
+                <label class="question-label" for="avis">Q6. Quelle est LA chose que nous devrions améliorer en priorité ?</label>
+                <textarea id="avis" name="avis" placeholder="Dites-nous tout..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Envoyer mon avis</button>
+        </form>
+
+        <!-- Message de succès -->
+        <div id="success-message">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 20px;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h2>Merci de votre confiance !</h2>
+            <p>Vos réponses nous aident à rendre nos chocolats encore meilleurs.</p>
+        </div>
+
+        <footer>
+            &copy; 2023 Diane's Chocolats. Tous droits réservés.
+        </footer>
+
+    </div>
+
+    <script>
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulation de l'envoi
+            const btn = document.querySelector('.btn-submit');
+            btn.textContent = 'Envoi en cours...';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                document.getElementById('feedbackForm').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+                // Scroll vers le haut pour voir le message
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
