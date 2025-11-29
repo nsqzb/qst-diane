@@ -29,6 +29,9 @@
             background-color: var(--color-bg);
             color: var(--color-primary);
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         h1, h2, h3 {
@@ -60,6 +63,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 0 20px 60px;
+            flex: 1;
         }
 
         /* --- Form Sections --- */
@@ -260,20 +264,81 @@
             box-shadow: 0 6px 20px rgba(93, 64, 55, 0.4);
         }
 
-        /* --- Success Message (Hidden by default) --- */
-        #success-message {
+        /* --- Success/Gift Page --- */
+        #gift-page {
             display: none;
             text-align: center;
-            background: var(--color-white);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-top: 20px;
+            animation: fadeIn 0.8s ease-out;
+            padding-top: 20px;
         }
-        
-        #success-message h2 {
+
+        .gift-card {
+            background: linear-gradient(135deg, #fff, #fdfbf7);
+            border: 2px solid var(--color-accent);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        .gift-title {
             color: var(--color-secondary);
+            font-size: 2.2rem;
             margin-bottom: 15px;
+        }
+
+        .gift-message {
+            font-size: 1.2rem;
+            color: var(--color-primary);
+            margin-bottom: 30px;
+        }
+
+        .gift-code-box {
+            background-color: var(--color-secondary);
+            color: var(--color-white);
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            border: 2px dashed var(--color-accent);
+        }
+
+        .btn-home {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: #c5a028;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
         }
 
         /* --- Footer --- */
@@ -282,25 +347,28 @@
             padding: 40px 0 20px;
             font-size: 0.9rem;
             color: #888;
+            margin-top: auto;
         }
 
         @media (max-width: 600px) {
             header h1 { font-size: 2rem; }
             .nps-label { width: 35px; height: 35px; }
             .card { padding: 20px; }
+            .gift-card { padding: 25px; }
+            .gift-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="main-header">
         <h1>Diane's</h1>
         <p>L'excellence chocolatée, votre avis précieux.</p>
     </header>
 
     <div class="container">
         
-        <!-- Form ulaire -->
+        <!-- Formulaire -->
         <form id="feedbackForm">
             
             <!-- Partie 1 -->
@@ -416,14 +484,21 @@
             <button type="submit" class="btn-submit">Envoyer mon avis</button>
         </form>
 
-        <!-- Message de succès -->
-        <div id="success-message">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 20px;">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <h2>Merci de votre confiance !</h2>
-            <p>Vos réponses nous aident à rendre nos chocolats encore meilleurs.</p>
+        <!-- Page de Récompense / Redirection Simulée -->
+        <div id="gift-page">
+            <div class="gift-card">
+                <div class="gift-icon">🎁</div>
+                <h2 class="gift-title">Merci pour votre avis !</h2>
+                <p class="gift-message">
+                    C'est une surprise ! Pour vous remercier de votre temps, 
+                    <strong>vous avez gagné un ballotin gratuit</strong> lors de votre prochaine commande.
+                </p>
+                
+                <div class="gift-code-box">CODE: MERCI2023</div>
+                
+                <br>
+                <a href="#" class="btn-home">Retour à la boutique</a>
+            </div>
         </div>
 
         <footer>
@@ -435,17 +510,28 @@
     <script>
         document.getElementById('feedbackForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Simulation de l'envoi
+            
+            // Simulation du chargement
             const btn = document.querySelector('.btn-submit');
+            const originalText = btn.textContent;
             btn.textContent = 'Envoi en cours...';
             btn.style.opacity = '0.7';
 
             setTimeout(() => {
+                // 1. Cacher le header et le formulaire
+                document.getElementById('main-header').style.display = 'none';
                 document.getElementById('feedbackForm').style.display = 'none';
-                document.getElementById('success-message').style.display = 'block';
-                // Scroll vers le haut pour voir le message
+                
+                // 2. Afficher la page "cadeau"
+                document.getElementById('gift-page').style.display = 'block';
+                
+                // 3. Scroll vers le haut pour voir le cadeau
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 1000);
+                
+                // Optionnel: Changer le titre de la page
+                document.title = "Félicitations ! | Diane's Chocolats";
+                
+            }, 800);
         });
     </script>
 </body>
