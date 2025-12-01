@@ -169,18 +169,18 @@
                 <div style="margin-bottom: 25px;">
                     <label class="question-label">Q2. Comment évaluez-vous l'état de votre ballotin à l'arrivée ?</label>
                     <div class="radio-group">
-                        <label class="custom-radio"><input type="radio" name="etat" value="intact">Intact et frais (Conforme)</label>
-                        <label class="custom-radio"><input type="radio" name="etat" value="abime">Légèrement abîmé</label>
-                        <label class="custom-radio"><input type="radio" name="etat" value="fondu">Chocolats fondus ou boîte écrasée</label>
+                        <label class="custom-radio"><input type="radio" name="etat" value="Intact (Conforme)">Intact et frais (Conforme)</label>
+                        <label class="custom-radio"><input type="radio" name="etat" value="Légèrement abîmé">Légèrement abîmé</label>
+                        <label class="custom-radio"><input type="radio" name="etat" value="Fondu/Écrasé">Chocolats fondus ou boîte écrasée</label>
                     </div>
                 </div>
 
                 <div>
                     <label class="question-label">Q3. Le délai de livraison a-t-il été respecté ?</label>
                     <div class="radio-group">
-                        <label class="custom-radio"><input type="radio" name="delai" value="oui">Oui, parfaitement</label>
-                        <label class="custom-radio"><input type="radio" name="delai" value="retard">Non, léger retard</label>
-                        <label class="custom-radio"><input type="radio" name="delai" value="lendemain">Non, livré le lendemain</label>
+                        <label class="custom-radio"><input type="radio" name="delai" value="Oui, parfaitement">Oui, parfaitement</label>
+                        <label class="custom-radio"><input type="radio" name="delai" value="Léger retard">Non, léger retard</label>
+                        <label class="custom-radio"><input type="radio" name="delai" value="Livré le lendemain">Non, livré le lendemain</label>
                     </div>
                 </div>
             </div>
@@ -203,9 +203,9 @@
                 <h2 class="section-title">Partie 4 : Diane's en Europe ?</h2>
                 <label class="question-label">Q5. Intéressé(e) pour envoyer des cadeaux en Autriche, Suisse ou France voisine ?</label>
                 <div class="radio-group">
-                    <label class="custom-radio"><input type="radio" name="europe" value="oui">Oui, absolument !</label>
-                    <label class="custom-radio"><input type="radio" name="europe" value="peut-etre">Peut-être</label>
-                    <label class="custom-radio"><input type="radio" name="europe" value="non">Non</label>
+                    <label class="custom-radio"><input type="radio" name="europe" value="Oui, absolument">Oui, absolument !</label>
+                    <label class="custom-radio"><input type="radio" name="europe" value="Peut-être">Peut-être</label>
+                    <label class="custom-radio"><input type="radio" name="europe" value="Non">Non</label>
                 </div>
             </div>
 
@@ -243,7 +243,6 @@
     <!-- SCRIPT FIREBASE & LOGIQUE -->
     <script type="module">
         // 1. IMPORTATION DES FONCTIONS (Depuis les serveurs de Google - CDN)
-        // Note: J'ai ajouté l'import de Firestore qui manquait dans ton code initial
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
@@ -270,20 +269,23 @@
             
             // Effet visuel sur le bouton
             const btn = document.querySelector('.btn-submit');
-            const originalText = btn.textContent;
             btn.textContent = 'Enregistrement en cours...';
             btn.disabled = true;
             btn.style.opacity = '0.7';
 
-            // Récupération sécurisée des valeurs
-            // Le "?." permet d'éviter les erreurs si rien n'est coché
+            // --- CORRECTION ---
+            // On utilise FormData pour récupérer TOUTES les données cochées
+            const formElement = document.getElementById('feedbackForm');
+            const data = new FormData(formElement);
+
+            // Construction de l'objet à envoyer
             const formData = {
-                nps: document.querySelector('input[name="nps"]:checked')?.value || "Non renseigné",
-                etatColis: document.querySelector('input[name="etat"]:checked')?.value || "Non renseigné",
-                delai: document.querySelector('input[name="delai"]:checked')?.value || "Non renseigné",
-                notePrix: document.querySelector('input[name="rating"]:checked')?.value || "Non renseigné",
-                europe: document.querySelector('input[name="europe"]:checked')?.value || "Non renseigné",
-                commentaire: document.getElementById('avis').value,
+                nps: data.get('nps') || "Non renseigné",
+                etatColis: data.get('etat') || "Non renseigné",
+                delai: data.get('delai') || "Non renseigné", 
+                notePrix: data.get('rating') || "Non renseigné",
+                europe: data.get('europe') || "Non renseigné",
+                commentaire: data.get('avis') || "Rien à signaler",
                 date: new Date().toISOString() // Date de l'envoi
             };
 
